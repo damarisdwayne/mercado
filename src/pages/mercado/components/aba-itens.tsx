@@ -1,6 +1,7 @@
 import { useMemo, useState } from 'react'
 import { Circle, Minus, Plus, SearchX, Sparkles } from 'lucide-react'
 import { EmptyState } from '@/components/empty-state'
+import { FiltroChips } from '@/components/filtro-chips'
 import { SearchField } from '@/components/search-field'
 import { Button } from '@/components/ui'
 import { estaNaHora } from '../situacao'
@@ -22,6 +23,10 @@ type AbaItensProps = {
   onEditarNota: (grupo: Grupo) => void
 }
 
+const BARRA_FIXA =
+  'sticky z-[5] -mx-4 -my-2 flex flex-col gap-2 bg-background px-4 py-2 md:-mx-6 md:px-6'
+const TOPO_DA_BARRA = { top: 'calc(3.5rem + env(safe-area-inset-top))' }
+
 export const AbaItens = ({
   itens,
   notas,
@@ -36,10 +41,27 @@ export const AbaItens = ({
 }: AbaItensProps) => {
   const [busca, setBusca] = useState('')
   const termo = busca.trim()
-  const grupos = useMemo(
+  const [categoria, setCategoria] = useState<string>()
+  const encontrados = useMemo(
     () => agruparPorCategoria(termo ? buscarItens(itens, termo) : itens),
     [itens, termo],
   )
+  const filtros = useMemo(
+    () =>
+      encontrados.map(({ slug, nome, itens: doGrupo }) => ({
+        id: slug,
+        rotulo: nome,
+        contagem: doGrupo.length,
+      })),
+    [encontrados],
+  )
+  const grupoAtivo = encontrados.find(({ slug }) => slug === categoria)
+  const grupos = grupoAtivo ? [grupoAtivo] : encontrados
+
+  const filtrar = (slug?: string) => {
+    setCategoria(slug)
+    window.scrollTo({ top: 0 })
+  }
 
   const acaoComprar: AcaoLinha = {
     icone: Circle,
@@ -56,12 +78,23 @@ export const AbaItens = ({
 
   return (
     <>
-      <div className="flex items-center gap-2">
-        <SearchField value={busca} onChange={setBusca} placeholder="Buscar ou adicionar item" />
-        <Button onClick={() => onNovo(termo)}>
-          <Plus size={16} />
-          Novo
-        </Button>
+      <div className={BARRA_FIXA} style={TOPO_DA_BARRA}>
+        <div className="flex items-center gap-2">
+          <SearchField value={busca} onChange={setBusca} placeholder="Buscar ou adicionar item" />
+          <Button onClick={() => onNovo(termo, grupoAtivo?.nome)}>
+            <Plus size={16} />
+            Novo
+          </Button>
+        </div>
+        {filtros.length > 1 && (
+          <FiltroChips
+            rotulo="Filtrar por categoria"
+            rotuloTodas="Todas"
+            opcoes={filtros}
+            ativa={grupoAtivo?.slug}
+            onChange={filtrar}
+          />
+        )}
       </div>
 
       {!grupos.length && (
