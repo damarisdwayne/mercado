@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react'
-import { Info, MessageSquarePlus } from 'lucide-react'
+import { Info, MessageSquarePlus, Plus } from 'lucide-react'
 import { Button } from '@/components/ui'
 
 type SecaoListaProps = {
@@ -7,10 +7,18 @@ type SecaoListaProps = {
   contagem: number
   nota?: string
   onEditarNota?: () => void
+  onAdicionar?: () => void
   children: ReactNode
 }
 
-export const SecaoLista = ({ titulo, contagem, nota, onEditarNota, children }: SecaoListaProps) => (
+export const SecaoLista = ({
+  titulo,
+  contagem,
+  nota,
+  onEditarNota,
+  onAdicionar,
+  children,
+}: SecaoListaProps) => (
   <section className="flex flex-col gap-2">
     <div className="flex min-h-9 items-center gap-2 px-1">
       <h2 className="flex flex-1 items-baseline gap-2 text-sm font-semibold text-foreground">
@@ -25,6 +33,16 @@ export const SecaoLista = ({ titulo, contagem, nota, onEditarNota, children }: S
           aria-label={`Observação de ${titulo}`}
         >
           <MessageSquarePlus size={16} />
+        </Button>
+      )}
+      {onAdicionar && (
+        <Button
+          variant="ghost"
+          size="icon"
+          onClick={onAdicionar}
+          aria-label={`Adicionar itens em ${titulo}`}
+        >
+          <Plus size={16} />
         </Button>
       )}
     </div>

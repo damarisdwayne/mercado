@@ -12,13 +12,15 @@ import type { Avisos } from './item-form/rascunho'
 export type Edicao = {
   item?: Item
   nome?: string
+  categoria?: string
 }
 
 type DialogoItemProps = {
   edicao?: Edicao
   categorias: string[]
   avisos: Avisos
-  onSalvar: (dados: ItemDados, existente?: Item) => void
+  onSalvar: (dados: ItemDados, existente: Item) => void
+  onAdicionar: (lista: ItemDados[]) => void
   onRemover: (id: string) => void
   onFechar: () => void
 }
@@ -28,6 +30,7 @@ export const DialogoItem = ({
   categorias,
   avisos,
   onSalvar,
+  onAdicionar,
   onRemover,
   onFechar,
 }: DialogoItemProps) => {
@@ -41,17 +44,19 @@ export const DialogoItem = ({
           <DialogDescription>
             {item
               ? 'Ajuste o nome, a categoria e o aviso de recompra.'
-              : 'O item novo já entra na lista de compras.'}
+              : 'O que você adicionar já entra na lista de compras.'}
           </DialogDescription>
         </DialogHeader>
         {edicao && (
           <ItemForm
             item={item}
             nomePadrao={edicao.nome}
+            categoriaPadrao={edicao.categoria}
             categorias={categorias}
             avisos={avisos}
-            onSalvar={(dados) => {
-              onSalvar(dados, item)
+            onSalvar={(lista) => {
+              if (item) onSalvar(lista[0], item)
+              else onAdicionar(lista)
               onFechar()
             }}
             onRemover={

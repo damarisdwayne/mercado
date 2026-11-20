@@ -131,7 +131,7 @@ export const MercadoPage = () => {
                   onPedir={pedir}
                   onTirar={tirar}
                   onEditar={editar}
-                  onNovo={(nome) => setEdicao({ nome })}
+                  onNovo={(nome, categoria) => setEdicao({ nome, categoria })}
                   onSugerir={faltamSugestoes ? () => adicionarVarios(ITENS_SUGERIDOS) : undefined}
                 />
               )}
@@ -145,6 +145,7 @@ export const MercadoPage = () => {
         categorias={categorias}
         avisos={avisos}
         onSalvar={salvar}
+        onAdicionar={(lista) => adicionarVarios(lista, true)}
         onRemover={remover}
         onFechar={() => setEdicao(undefined)}
       />

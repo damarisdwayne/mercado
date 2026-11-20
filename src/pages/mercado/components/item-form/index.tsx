@@ -3,34 +3,32 @@ import { Check, Trash } from 'lucide-react'
 import { Button, DialogFooter } from '@/components/ui'
 import type { Item, ItemDados } from '../../types'
 import { Campos } from './campos'
-import {
-  comCategoria,
-  dadosDe,
-  podeSalvar,
-  rascunhoDe,
-  type Avisos,
-  type Rascunho,
-} from './rascunho'
+import { comCategoria, dadosDe, rascunhoDe, type Avisos, type Rascunho } from './rascunho'
 
 type ItemFormProps = {
   item?: Item
   nomePadrao?: string
+  categoriaPadrao?: string
   categorias: string[]
   avisos: Avisos
-  onSalvar: (dados: ItemDados) => void
+  onSalvar: (lista: ItemDados[]) => void
   onRemover?: () => void
 }
 
 export const ItemForm = ({
   item,
   nomePadrao,
+  categoriaPadrao = '',
   categorias,
   avisos,
   onSalvar,
   onRemover,
 }: ItemFormProps) => {
-  const [rascunho, setRascunho] = useState(() => rascunhoDe(item, nomePadrao))
-  const valido = podeSalvar(rascunho)
+  const [rascunho, setRascunho] = useState(() =>
+    item ? rascunhoDe(item) : comCategoria(rascunhoDe(item, nomePadrao), categoriaPadrao, avisos),
+  )
+  const lista = dadosDe(rascunho, !item)
+  const valido = lista.length > 0
 
   const alterar = (alteracao: Partial<Rascunho>) =>
     setRascunho((atual) => ({ ...atual, ...alteracao }))
@@ -48,11 +46,12 @@ export const ItemForm = ({
     <form
       onSubmit={(event) => {
         event.preventDefault()
-        if (valido) onSalvar(dadosDe(rascunho))
+        if (valido) onSalvar(lista)
       }}
     >
       <Campos
         rascunho={rascunho}
+        varios={!item}
         categorias={categorias}
         onChange={alterar}
         onCategoria={alterarCategoria}
@@ -65,7 +64,7 @@ export const ItemForm = ({
         )}
         <Button type="submit" className="flex-1" disabled={!valido}>
           <Check size={16} />
-          Salvar
+          {lista.length > 1 ? `Adicionar ${lista.length} itens` : 'Salvar'}
         </Button>
       </DialogFooter>
     </form>

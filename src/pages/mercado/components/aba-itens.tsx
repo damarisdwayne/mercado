@@ -17,7 +17,7 @@ type AbaItensProps = {
   onPedir: (item: Item) => void
   onTirar: (item: Item) => void
   onEditar: (item: Item) => void
-  onNovo: (nome: string) => void
+  onNovo: (nome: string, categoria?: string) => void
   onSugerir?: () => void
   onEditarNota: (grupo: Grupo) => void
 }
@@ -79,6 +79,7 @@ export const AbaItens = ({
           contagem={grupo.itens.length}
           nota={notas[grupo.slug]}
           onEditarNota={() => onEditarNota(grupo)}
+          onAdicionar={() => onNovo('', grupo.nome)}
         >
           {grupo.itens.map((item) => {
             const acao = acaoDe(item)

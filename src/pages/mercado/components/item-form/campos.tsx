@@ -6,19 +6,24 @@ import type { Rascunho } from './rascunho'
 
 type CamposProps = {
   rascunho: Rascunho
+  varios: boolean
   categorias: string[]
   onChange: (alteracao: Partial<Rascunho>) => void
   onCategoria: (categoria: string) => void
 }
 
-export const Campos = ({ rascunho, categorias, onChange, onCategoria }: CamposProps) => (
+export const Campos = ({ rascunho, varios, categorias, onChange, onCategoria }: CamposProps) => (
   <div className="flex flex-col gap-4">
-    <Campo id="item-nome" rotulo="Nome">
+    <Campo
+      id="item-nome"
+      rotulo="Nome"
+      ajuda={varios ? 'Para adicionar vários de uma vez, separe por vírgula.' : undefined}
+    >
       <Input
         id="item-nome"
         value={rascunho.nome}
         onChange={(event) => onChange({ nome: event.target.value })}
-        placeholder="Ex.: Tomate"
+        placeholder={varios ? 'Ex.: Tomate, Cebola, Batata' : 'Ex.: Tomate'}
       />
     </Campo>
 
