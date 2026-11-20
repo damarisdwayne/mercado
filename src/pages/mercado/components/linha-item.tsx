@@ -27,7 +27,7 @@ export const LinhaItem = ({ item, hoje, acao, selo, riscado, onEditar }: LinhaIt
   return (
     <li
       className={cn(
-        'flex items-center gap-1 rounded-lg border border-border bg-card py-1 pl-1 pr-2',
+        'flex items-center gap-1 rounded-lg border border-border bg-card p-1',
         item.prioridade && !riscado && 'border-warning/70 bg-warning/5',
       )}
     >
@@ -40,37 +40,37 @@ export const LinhaItem = ({ item, hoje, acao, selo, riscado, onEditar }: LinhaIt
       >
         <Icone size={22} />
       </Button>
-      <div className="min-w-0 flex-1">
-        <p
-          className={cn(
-            'flex items-center gap-1.5 text-sm font-medium text-foreground',
-            riscado && 'text-muted-foreground line-through',
-          )}
-        >
-          <span className="truncate">{item.nome}</span>
-          {item.prioridade && (
-            <Star
-              size={12}
-              className="shrink-0 fill-warning text-warning"
-              aria-label="Prioridade"
-            />
-          )}
-        </p>
-        {detalhe && (
-          <p className="flex items-center gap-1 truncate text-xs text-muted-foreground">
-            {naHora && <Clock size={12} className="shrink-0 text-warning" />}
-            {detalhe}
-          </p>
-        )}
-      </div>
-      {selo && <Badge>{selo}</Badge>}
       <Button
         variant="ghost"
-        size="icon"
+        className="h-auto min-h-11 min-w-0 flex-1 justify-start gap-2 px-1 py-1 text-left font-normal"
         onClick={() => onEditar(item)}
         aria-label={`Editar ${item.nome}`}
       >
-        <Pencil size={16} />
+        <span className="flex min-w-0 flex-1 flex-col">
+          <span
+            className={cn(
+              'flex items-center gap-1.5 text-sm font-medium text-foreground',
+              riscado && 'text-muted-foreground line-through',
+            )}
+          >
+            <span className="truncate">{item.nome}</span>
+            {item.prioridade && (
+              <Star
+                size={12}
+                className="shrink-0 fill-warning text-warning"
+                aria-label="Prioridade"
+              />
+            )}
+          </span>
+          {detalhe && (
+            <span className="flex items-center gap-1 truncate text-xs text-muted-foreground">
+              {naHora && <Clock size={12} className="shrink-0 text-warning" />}
+              {detalhe}
+            </span>
+          )}
+        </span>
+        {selo && <Badge>{selo}</Badge>}
+        <Pencil size={16} className="mx-1 shrink-0" />
       </Button>
     </li>
   )
